@@ -32,10 +32,31 @@ class Book
     self.title().==(another_book.title()).&(self.id().==(another_book.id()))
   end
 
+  # def update(attributes)
+  #   @title = attributes.fetch(:title, @title)
+  #   @id = self.id()
+  #   DB.exec("UPDATE books SET title = '#{@title}' WHERE id = #{@id};")
+  # end
+
   def update(attributes)
     @title = attributes.fetch(:title, @title)
-    @id = self.id()
-    DB.exec("UPDATE books SET title = '#{@title}' WHERE id = #{@id};")
+    DB.exec("UPDATE books SET title = '#{@title}' WHERE id = #{self.id()};")
+
+    attributes.fetch(:author_id, []).each() do |author_id|
+      DB.exec("INSERT INTO books_authors (author_id, book_id) VALUES (#{author_id}, #{self.id()});")
+    end
+  end
+
+  def authors
+    books_authors = []
+    results = DB.exec("SELECT author_id FROM books_authors WHERE book_id = #{self.id()};")
+    results.each() do |result|
+      author_id = result.fetch("author_id").to_i()
+      author = DB.exec("SELECT * FROM authors WHERE id = #{author_id};")
+      name = author.first().fetch("name")
+      books_authors.push(Author.new({:name => name, :id => author_id}))
+    end
+    books_authors
   end
 
   def delete

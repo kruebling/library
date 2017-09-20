@@ -34,6 +34,30 @@ describe(Book) do
       book.update({:title => "Cat in the Hat"})
       expect(book.title()).to(eq("Cat in the Hat"))
     end
+
+    it("lets you add an author to a book") do
+      book = Book.new({:title => "Killing Me Softly", :id => nil})
+      book.save()
+      nicci = Author.new({:name => "Nicci Gerrard", :id => nil})
+      nicci.save()
+      sean = Author.new({:name => "Sean French", :id => nil})
+      sean.save()
+      book.update({:author_id => [nicci.id(), sean.id()]})
+      expect(book.authors()).to(eq([nicci, sean]))
+    end
+  end
+
+  describe("#authors") do
+    it("returns all of the authors in a particular book") do
+      book = Book.new({:name => "Killing Me Softly", :id => nil})
+      book.save()
+      nicci = Author.new({:name => "Nicci Gerrard", :id => nil})
+      nicci.save()
+      sean = Author.new({:name => "Sean French", :id => nil})
+      sean.save()
+      book.update({:author_id => [nicci.id(), sean.id()]})
+      expect(book.authors()).to(eq([nicci, sean]))
+    end
   end
 
   describe("#delete") do
@@ -46,4 +70,5 @@ describe(Book) do
       expect(Book.all()).to(eq([book2]))
     end
   end
+
 end
