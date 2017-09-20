@@ -32,12 +32,6 @@ class Book
     self.title().==(another_book.title()).&(self.id().==(another_book.id()))
   end
 
-  # def update(attributes)
-  #   @title = attributes.fetch(:title, @title)
-  #   @id = self.id()
-  #   DB.exec("UPDATE books SET title = '#{@title}' WHERE id = #{@id};")
-  # end
-
   def update(attributes)
     @title = attributes.fetch(:title, @title)
     DB.exec("UPDATE books SET title = '#{@title}' WHERE id = #{self.id()};")
